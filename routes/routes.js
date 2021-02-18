@@ -1,7 +1,8 @@
 module.exports = (app) => {
 
-  const user = require('../controllers/user-auth');
-
+  const register = require('../controllers/register-user');
+  const user = require('../controllers/update-user');
+  const auth = require('../controllers/auth');
 
   // extract token middleware
   function verifyToken(req, res, next) {
@@ -29,11 +30,19 @@ module.exports = (app) => {
   });
 
 
-  // VERiFY LOGIN
-  app.post('/api/auth-token', user.verifyLogin);
+  // ===== AUTH =======
+  app.get('/api/auth-token', verifyToken, auth.verifyLogin);
+  app.route('/api/user-login',)
+    .post(auth.login);
 
 
-
+  // ====== RGISTER ROUTES ======= 
+  app
+    .route('/api/register-one')
+    .post(register.registerUserStepOne);
+  app.post('/api/register-two', register.registerUserStepTwo);
+  app.put('/api/change-pin', verifyToken, user.changePin)
+  app.put('/api/update-user', verifyToken, user.updateUser)
 
 
 
@@ -47,7 +56,6 @@ module.exports = (app) => {
       res.status(404).json({ 'message': "Route does not exist" })
 
     } else {
-
       res.redirect('/index.html');
     }
   });
