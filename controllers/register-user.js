@@ -78,9 +78,48 @@ exports.registerUserStepOne = (req, res) => {
                     })
 
                     user.save()
-                        .then(user => {
+                        .then(async user => {
                             const util = new Utility();
-                            util.sendEmail(email, 'title', 'html')
+
+                            // create email verification link
+
+                            const link = await Utility.generateVerificationLink(email, user_id);
+
+                            const html = `
+                            <section style="padding: 40px;">
+                                    <div style="width: 100%;">
+                                        <div style="width: 90%">
+                                            <p>Email: <span>info@scbc-intl.com</span></p>
+                                            <p>Phone: <span> + 6252 3663 62 76262</span></p>
+                                        </div>
+                                        <a style="width: 10%" target="_blank" href="${Utility.domain}">visit: SCBC Internet Banking</a>
+                                    </div>
+                                    <hr style="border-color: blue">
+                                    <p>Dear Mr. Glenn Jens,</p>
+                                    <h3>SCBC Internet Banking Electronic Notifocation</h3>
+                                    <p>Welcome to SCBC Internet Banking! Please <a target="_blank"  href="${link}">click here </a> to verify your  email address</p>
+                                    <p>To login, go to <a target="_blank" href="${Utility.frontend}">${Utility.frontend}</a> then enter the following information</p>
+                                    <div style="width: 20%;">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <p style="margin-bottom: 0; font-weight: bold;">User ID:</p>
+                                            <p style="margin-bottom: 0; font-weight: bold;">${user_id}</p> 
+                                        </div>
+                                        <div style="display: flex; justify-constent: space-between;">
+                                            <p style="margin-bottom: 0; font-weight: bold;"> User PIN:</p>
+                                            <p style="margin-bottom: 0; font-weight: bold;">${pin}</p> 
+                                        </div>
+                                    </div>
+                                    <p>Per the standards of the Central Bank, the first time you login, you are required to change your USER PIN</p>
+                                    <p>If you have any techincal problems, contact the information technonlogy
+                                        Department on email: <a href="mailto:info@iferch.com">info@iferch.com</a> or your personal account manager.</p>
+                                    <hr style="border-color: blue">
+                                    <footer>
+                                        <p>Please ignore this email if you didn't registering with us.</p>
+                                    </footer>
+                                </section>
+                            `;
+
+                            util.sendEmail(email, 'Email verification and Credentials', html)
                                 .then((response) => {
                                     res.status(201).json({
                                         message: 'A verify link has been sent to your email link please verify your email address',
@@ -160,6 +199,9 @@ exports.registerUserStepTwo = (req, res) => {
         })
     }).catch(err => {
         console.log(err)
+        res.status(500).json({
+            message: 'Could not complete process at the moment, try again'
+        })
     })
 
 

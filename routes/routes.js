@@ -41,9 +41,8 @@ module.exports = (app) => {
     .route('/api/register-one')
     .post(register.registerUserStepOne);
   app.post('/api/register-two', register.registerUserStepTwo);
-  app.put('/api/change-pin', verifyToken, user.changePin)
-  app.put('/api/update-user', verifyToken, user.updateUser)
-
+  app.put('/api/change-pin', verifyToken, user.changePin);
+  app.put('/api/update-user', verifyToken, user.updateUser);
 
 
   // NB: all routes should be above this line

@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
-
+const jwt = require('jsonwebtoken');
+const secretKey = require('../config/secret');
 
 class Utility {
 
@@ -13,6 +14,9 @@ class Utility {
         },
     });
 
+
+    static domain = "http://localhost:3000";
+    static frontend = "http://localhost:8080";
 
     static getRandomArbitrary(min, max) {
         return Math.random() * (max - min) + min;
@@ -49,6 +53,32 @@ class Utility {
         })
 
 
+    }
+
+    static async generateVerificationLink(email, id) {
+        const data_to_sign = {
+            email,
+            id
+        }
+        const token = await this.signJWT(data_to_sign);
+        return `${this.frontend}?q=${token}`;
+    }
+
+    static signJWT(data_to_sign) {
+
+        const secretKey = "526375Gg^&%$^*bsgshjs(&^@%@&*54435775ggGFSGFGHAHJJADJSJ";
+        const expires = "1h"
+        return new Promise((resolve, reject) => {
+            jwt.sign({ info: data_to_sign }, secretKey, { expiresIn: expires },
+                (err, token) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    resolve(token)
+                }
+            );
+        })
     }
 }
 

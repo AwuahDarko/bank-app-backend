@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/users');
 
 
-const expires = '10m';
+const expires = '30m';
 
 
 exports.verifyLogin = (req, res) => {
@@ -15,7 +15,6 @@ exports.verifyLogin = (req, res) => {
             return
         }
         const _id = authData.user.id;
-
         User.findOne({ _id })
             .then(user => {
                 user.pin = "";
@@ -31,7 +30,7 @@ exports.verifyLogin = (req, res) => {
 exports.login = (req, res) => {
     const { user_id, pin } = req.body;
 
-    if (typeof user_id == 'undefined' || user_id == "" || typeof user_id !== 'number') {
+    if (typeof user_id == 'undefined' || user_id == "") {
         res.status(400).json({
             message: 'Provide user id'
         })
@@ -53,6 +52,8 @@ exports.login = (req, res) => {
                 })
                 return
             }
+
+
 
             bcrypt.compare(pin, user.pin, (err, isMatch) => {
                 if (err) {
@@ -76,6 +77,22 @@ exports.login = (req, res) => {
 
                 if (isMatch) {
                     // generate token
+
+                    if (!user.email_verified) {
+                        res.status(401).json({
+                            message: 'Please verify your email address',
+                        })
+
+                        return
+                    }
+
+                    if (user.status != 'active') {
+                        res.status(401).json({
+                            message: 'Please contact administrator for account activation',
+                        })
+
+                        return;
+                    }
                     jwt.sign({ user: data_to_sign }, secretKey, { expiresIn: expires },
                         (err, token) => {
                             if (err) {
@@ -113,3 +130,7 @@ exports.login = (req, res) => {
             })
         })
 }
+
+
+
+
