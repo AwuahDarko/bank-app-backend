@@ -162,7 +162,7 @@ exports.registerUserStepOne = (req, res) => {
 
 
 exports.registerUserStepTwo = (req, res) => {
-    const { id, phone_code, ssn_or_id, gender, country, dob, address, phone } = req.body;
+    const { id, phone_code, ssn_or_id, gender, country, dob, address, phone, occupation } = req.body;
 
     if (typeof id == 'undefined' || id == "") {
         res.status(400).json({ message: 'Specify an existing id' })
@@ -192,7 +192,8 @@ exports.registerUserStepTwo = (req, res) => {
         address,
         phone,
         country,
-        ssn_or_id
+        ssn_or_id,
+        occupation
     }).then(response => {
         res.status(201).json({
             message: 'Account successfully created'

@@ -51,7 +51,7 @@ const wireTransferSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    country: {
+    beneficiary_country: {
         type: String,
         required: true
     },
@@ -78,6 +78,11 @@ const wireTransferSchema = mongoose.Schema({
     beneficiary_bank_swift_iban: {
         type: String,
         required: true
+    },
+    status: {
+        type: String,
+        required: true,
+        default: 'started' // code, completed
     }
 });
 

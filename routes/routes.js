@@ -3,6 +3,8 @@ module.exports = (app) => {
   const register = require('../controllers/register-user');
   const user = require('../controllers/update-user');
   const auth = require('../controllers/auth');
+  const profile = require('../controllers/users');
+  const wire_transfers = require('../controllers/wire-transfer')
 
   // extract token middleware
   function verifyToken(req, res, next) {
@@ -44,6 +46,18 @@ module.exports = (app) => {
   app.put('/api/change-pin', verifyToken, user.changePin);
   app.put('/api/update-user', verifyToken, user.updateUser);
 
+
+  // ====== WIRE TRANSFER ROUTES =========
+  app.route('/api/wire-transfer')
+  .post(verifyToken, wire_transfers.makeWireTransfer)
+  .get(verifyToken, wire_transfers.getWireTransfer)
+  .put(verifyToken, wire_transfers.updateWireTransfer)
+  
+  app.get('/api/check-wire-transfer', verifyToken, wire_transfers.getWiredTransferStatus)
+
+  // app
+  // .route('/api/user-profile')
+  // .get(profile.getUserInfo);
 
   // NB: all routes should be above this line
   // ===============================================================

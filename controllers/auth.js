@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const User = require('../models/users');
 
 
-const expires = '30m';
+const expires = '30d';
 
 
 exports.verifyLogin = (req, res) => {

@@ -59,7 +59,7 @@ const userSchema = mongoose.Schema({
     address: {
         type: String,
     },
-    email_verifed: {
+    email_verified: {
         type: Boolean,
         default: false
     },
